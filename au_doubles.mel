@@ -1,0 +1,87 @@
+//--------------------------------------------------------------------------------------------------------------
+// Script to automatically generate all double AU combinations at predetermined weightings
+// Crystal Butler  10/09/2015
+//--------------------------------------------------------------------------------------------------------------
+
+// array of blendshape weights
+float $auWeights[23] = {.7, .6, .6, 1.0, .7, .7, 1.0, .8, 1.0, 1.0, .7, 1.0, 1.0, .7, .8, .8, .7, 1.0, 1.0, .6, .6, .7, .3};
+
+// array of blendshapes
+string $auNames[23] = {"ExpressionBlendshapes.AU_1","ExpressionBlendshapes.AU_2_L", "ExpressionBlendshapes.AU_2_B", "ExpressionBlendshapes.AU_4_B", 
+"ExpressionBlendshapes.AU_5_B", "ExpressionBlendshapes.AU_6_B", "ExpressionBlendshapes.AU_7_B", "ExpressionBlendshapes.AU_9",
+"ExpressionBlendshapes.AU_10","ExpressionBlendshapes.AU_11", "ExpressionBlendshapes.AU_12_B", "ExpressionBlendshapes.AU_14_L", "ExpressionBlendshapes.AU_14_B", 
+ "ExpressionBlendshapes.AU_15_B", "ExpressionBlendshapes.AU_17", "ExpressionBlendshapes.AU_18",  "ExpressionBlendshapes.AU_20_B",
+  "ExpressionBlendshapes.AU_23", "ExpressionBlendshapes.AU_24",  "JawBlendshapes.AU_25_Jaw", "ExpressionBlendshapes.AU_25", 
+   "ExpressionBlendshapes.AU_28_B", "ExpressionBlendshapes.AU_43_B"};
+   
+// keyframe numbering
+int $k = 1;
+
+//--------------------------------------------------------------------------------------------------------------
+// loop to generate all double AUs
+//--------------------------------------------------------------------------------------------------------------
+
+
+// zero out blendshape arrays
+int $i;
+int $j;
+
+for ($i = 0; $i < 23; $i++)
+{
+    setAttr $auNames[$i] 0;    
+}
+
+for ($j = 0; $j < 23; $j++)
+{
+    setAttr $auNames[$j] 0;
+}
+
+// generate combos
+for ($i = 0; $i < 22; $i++)
+{
+    if ($i == 20)
+    {
+        $i++;
+    }
+    
+    setAttr $auNames[$i] $auWeights[$i];
+    if ($i == 19)
+    {
+        setAttr $auNames[$i + 1] $auWeights[$i + 1];
+    }
+    
+    
+    for ($j = $i + 1; $j < 23; $j++)
+    {
+        if (($j == 20) || ($i == 1 && $j == 2) || ($i == 11 && $j == 12))
+        {
+            $j++;
+        }
+        
+        setAttr $auNames[$j] $auWeights[$j];
+        if ($j == 19)
+        {
+            setAttr $auNames[$j + 1] $auWeights[$j + 1];
+        }
+        
+        print ("Image " + $k + " AU " + $auNames[$i] + " weight " + $auWeights[$i] + " + " + 
+                "AU " + $auNames[$j] + " weight " + $auWeights[$j] + "\n");
+        setKeyframe -t $k "ExpressionBlendshapes";
+        setKeyframe -t $k "JawBlendshapes";
+        
+        if ($j == 19)
+        {
+            setAttr $auNames[$j + 1] 0;
+        }
+        setAttr $auNames[$j] 0;
+        $k++;
+        //refresh;
+    }
+    
+    setAttr $auNames[$i] 0;
+    if ($i == 19)
+    {
+        setAttr $auNames[$i + 1] 0;
+    }
+    
+};
