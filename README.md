@@ -1,7 +1,7 @@
 # miface
 Facial Expression Mapping
 
-Miface is an ongoing research and software development project meant to expand the repetoire of facial expressions that can be automatically detected by recognition systems, and emulated by 3D virtual humans.
+Miface is an ongoing research and software development project meant to expand the repertoire of facial expressions that can be automatically detected by recognition systems, and emulated by 3D virtual humans.
 
 The miface pipeline includes modeling base expressions in faceshift, then exporting them as fbx files to Maya where the resulting blendshapes are tuned to align their surface deformations with descriptions and examples of Action Units (AUs) provided by the Facial Action Coding System (FACS: Ekman, Friesen and Hager, 2002). Additional blendshapes have been added to complete the set of AUs essential for modeling the majority of facial expressions.
 
