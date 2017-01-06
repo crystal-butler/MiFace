@@ -1,4 +1,4 @@
-# miface
+# MiFace
 Facial Expression Mapping
 
 MiFace is an ongoing research and software development project designed to expand the repertoire of facial expressions mapped to quantified movements in the human face, along with natural language labels denoting their associated social signal values. Applications of a rich facial expression lexicon include improving the servicibility of automatic recognition systems, supporting the development of affective virtual humans, and diagnostics and treatment in psychology. Using a 3D model of the human face capable of emulating the muscle activations, specifically the Action Units (AUs) provided by the Facial Action Coding System (FACS: Ekman, Friesen and Hager, 2002), a broad range of potential expressions can be rapidly and reliably generated for testing.
