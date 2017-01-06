@@ -1,0 +1,1 @@
+cat ../imageList_majVote.txt | while read f; do find . -name $f | cp $f ../images; done

@@ -1,0 +1,1 @@
+sed -i '' 's/$/.jpg/' iL_test.txt

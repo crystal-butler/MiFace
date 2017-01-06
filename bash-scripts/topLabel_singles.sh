@@ -1,0 +1,1 @@
+for f in *; do head -n 1 $f > tmp; mv tmp $f; done

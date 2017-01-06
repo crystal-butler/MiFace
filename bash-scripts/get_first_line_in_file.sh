@@ -1,0 +1,1 @@
+for f in *; do <"$f" read line; printf "$line\n" >>basicsTopLabel.txt; done

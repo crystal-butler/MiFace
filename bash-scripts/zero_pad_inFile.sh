@@ -1,0 +1,1 @@
+awk '{$1 = sprintf("%04d", $1); print}' < imgNums.txt > tmp.txt; mv tmp.txt imgNums.tx

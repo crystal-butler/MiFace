@@ -1,0 +1,1 @@
+for f in *; do tr " " "," < $f > tmp.txt; mv tmp.txt $f; done

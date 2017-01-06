@@ -1,0 +1,1 @@
+for f in *; do <$f awk '$3 ~ /e/ {$3 = 0}1' > tmp && mv tmp $f; done
