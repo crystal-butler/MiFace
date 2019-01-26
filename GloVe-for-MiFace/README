@@ -1,4 +1,4 @@
-The information about GloVe below came with the fork of https://github.com/stanfordnlp/GloVe. The only files that have been altered are in eval/python/, including our workhorse script cosine_distance.py. It is a heavily modified version of evaluate.py that takes a directory containing any number of files consisting of two words on line (word pairs), in arbitrarily nested subdirectories. Each word pair is read in, gets a similarity value calculated, and is written to a specified file.
+The information about GloVe below came with the fork of https://github.com/stanfordnlp/GloVe. The only files that have been altered are in eval/python/, including our workhorse script cosine_distance.py. It is a heavily modified version of distance.py that takes a directory containing any number of files consisting of two words on a line (word pairs), in arbitrarily nested subdirectories. Each word pair is read in, gets a similarity value calculated, and is written to a specified file.
 
 
 GloVe: Global Vectors for Word Representation
