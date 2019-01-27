@@ -5,23 +5,27 @@ import numpy as np
 np.seterr(divide='ignore', invalid='ignore')  # fix divide runtime error (when dividing by zeros)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('vocab_file', help='a file of vocabulary words', type=str)
-parser.add_argument('vectors_file', help='a file of word-feature vectors based on the vocabulary', type=str)
-parser.add_argument('--source_dir', help="a directory containing lists of word pairs; requires a value for output_dir \
-to be input to work",
+parser.add_argument('vectors_file', help='a file of word-features vectors', type=str)
+parser.add_argument('--vocab_file', help='a file of vocabulary words; if not given, one will be generated \
+from vectors_file', default=None, type=str)
+parser.add_argument('--source_dir', help="a directory containing lists of word pairs; requires a value for output_dir",
                     default=None, type=str)
 parser.add_argument('--output_dir', help="a directory to write similarity value files to", default=None, type=str)
 args = parser.parse_args()
 
 
 def generate():
-    with open(args.vocab_file, 'r') as f:
-        words = [x.rstrip().split(' ')[0] for x in f.readlines()]
+    if args.vocab_file is not None:
+        with open(args.vocab_file, 'r') as f:
+            words = [x.rstrip().split(' ')[0] for x in f.readlines()]
     with open(args.vectors_file, 'r') as f:
         vectors = {}
+        words = []
         for line in f:
             # Populate the dictionary with word feature lists, indexed by word.
             vals = line.rstrip().split(' ')
+            if args.vocab_file is None:
+                words.append(vals[0])
             vectors[vals[0]] = [float(x) for x in vals[1:]]
 
     # Create word:index and index:word maps.
@@ -94,7 +98,7 @@ if __name__ == "__main__":
     else:
         # Get pairs of words from the command line and print similarity scores to standard out.
         while True:
-            input_term1 = input("\n Enter the first of two words (type EXIT to quit): ")
+            input_term1 = input("\nEnter the first of two words (type EXIT to quit): ")
             if input_term1 == 'EXIT':
                 break
             input_term2 = input("Enter the second of two words (type EXIT to quit): ")
