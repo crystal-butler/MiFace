@@ -76,25 +76,29 @@ if __name__ == "__main__":
     if args.source_dir is not None and args.output_dir is not None:
         # We are reading from one or more files containing word pair lists, and writing
         # pairwise similarity scores to an output file.
-        # with open(args.source_dir, 'r') as root_dir:
-        for subdir, dirs, files in os.walk(args.source_dir):
-            for file in files:
-                f = open(subdir + '/' + file, 'r')
-                f2 = open(args.output_dir + file, 'w')
-                for line in f:
-                    array = []
-                    for word in line.split():
-                        array.append(word)
-                    input_term1 = array[0]
-                    input_term2 = array[1]
-                    similarity = distance(W, vocab, ivocab, input_term1, input_term2)
-                    if similarity == -1:
-                        # One of the words wasn't in the vocabulary, so write nothing to the file.
-                        continue
-                    else:
-                        f2.write("%s%s%s\n" % (input_term1.ljust(20), input_term2.ljust(20), similarity))
-                f2.close()
-                f.close()
+        if os.path.isdir(args.source_dir):
+            for subdir, dirs, files in os.walk(args.source_dir):
+                for file in files:
+                    # On Mac, automatically generated .DS_Store files will cause an error, so ignore hidden files.
+                    if not file.startswith('.'):
+                        f = open(subdir + '/' + file, 'r')
+                        f2 = open(args.output_dir + file, 'w')
+                        for line in f:
+                            array = []
+                            for word in line.split():
+                                array.append(word)
+                            input_term1 = array[0]
+                            input_term2 = array[1]
+                            similarity = distance(W, vocab, ivocab, input_term1, input_term2)
+                            if similarity == -1:
+                                # One of the words wasn't in the vocabulary, so write nothing to the file.
+                                continue
+                            else:
+                                f2.write("%s%s%s\n" % (input_term1.ljust(20), input_term2.ljust(20), similarity))
+                        f2.close()
+                        f.close()
+        else:
+            print("The source directory is empty, or you input a file name rather than a directory name: exiting.")
     else:
         # Get pairs of words from the command line and print similarity scores to standard out.
         while True:

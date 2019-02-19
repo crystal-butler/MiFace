@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
-import sys
 import subprocess as sp
+
 
 def generate():
     parser = argparse.ArgumentParser()
@@ -34,18 +34,19 @@ def generate():
     W_norm = (W.T / d).T
     return (W_norm, vocab, ivocab)
 
+
 def distance(W, vocab, ivocab, input_term):
     for idx, term in enumerate(input_term.split(' ')):
         if term in vocab:
             print('Word: %s  Position in vocabulary: %i' % (term, vocab[term]))
             if idx == 0:
-                vec_result = W[vocab[term], :] 
+                vec_result = W[vocab[term], :]
             else:
-                vec_result += W[vocab[term], :] 
+                vec_result += W[vocab[term], :]
         else:
             print('Word: %s  Out of dictionary!\n' % term)
             return
-    
+
     vec_norm = np.zeros(vec_result.shape)
     d = (np.sum(vec_result ** 2,) ** (0.5))
     vec_norm = (vec_result.T / d).T
@@ -65,15 +66,13 @@ def distance(W, vocab, ivocab, input_term):
 
 
 if __name__ == "__main__":
-    N = 100;          # number of closest words that will be shown
+    N = 100  # number of closest words that will be shown
     W, vocab, ivocab = generate()
     while True:
-        raw_input('Press enter to continue: ')      # CB 03/28/2016: added to clear terminal window properly
-        tmp = sp.call('clear',shell=True)           # CB 03/28/2016: added to clear terminal window properly
-        input_term = raw_input("\nEnter word or sentence (EXIT to break): ")
+        input('Press enter to continue: ')      # CB 03/28/2016: added to clear terminal window properly
+        tmp = sp.call('clear', shell=True)           # CB 03/28/2016: added to clear terminal window properly
+        input_term = input("\nEnter word or sentence (EXIT to break): ")
         if input_term == 'EXIT':
             break
         else:
             distance(W, vocab, ivocab, input_term)
-
-
