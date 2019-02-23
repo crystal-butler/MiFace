@@ -25,7 +25,7 @@ def generate():
         # Dictionaries are key:value indexed; lookup is done via hash function and should be O(1) time complexity.
         # But the dictionary is just an intermediate. Lookups will be done against a numpy ndarray, constructed later.
         vectors = {}
-        # The "words" list is an intermediate. The dictionary used in processing is construceted later.
+        # The "words" list is an intermediate. The dictionary used in processing is constructed later.
         words = []
         vals = []
         for line in f:
