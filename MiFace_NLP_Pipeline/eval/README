@@ -1,7 +1,0 @@
-This is a fork of https://github.com/stanfordnlp/GloVe, specialized for use with the MiFace NLP pipeline.
-
-None of the files from the original GloVe project have been retained, with the exception of a heavily altered distance.py in eval/python/ and LICENSE. The distance.py script has been renamed word_pair_distance.py, because MiFace exclusively requires cosine similarity scores between pairs of input words. It takes input from stdin, or a directory containing any number of files consisting of two words on a line can be specified as a command line option. It will process arbitrarily nested subdirectories as well. Each word pair is read in, gets a similarity value calculated, and the word pair and score are written to an output file, also specified as a command line option.
-
-The word_pair_distance.py script has also been tested with ConceptNet's Numberbatch word embeddings:
-https://github.com/commonsense/conceptnet-numberbatch
-ConceptNet's Numberbatch embeddings incorporate information from GloVe's word representations and a variety of other sources. They can be used in place of GloVe's pretrained vectors after removing the header row from the file, which indicates the vocabulary count and number of dimensions per vector. On semantic similarity tests of facial expression word pairs, Numberbatch performs better than GloVe when compared to results from human raters. Testing was done using GloVe's pre-trained Common Crawl 2.2M vocabulary vectors as well as their Wikipedia 2014 + Gigaword vectors, and numberbatch-en-17.06.txt.
