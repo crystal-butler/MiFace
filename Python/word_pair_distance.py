@@ -17,13 +17,15 @@ import shutil
 import argparse
 import math
 import numpy as np
-np.seterr(divide='ignore', invalid='ignore')  # Fix runtime error (when dividing by zeros).
+np.seterr(divide='ignore', invalid='ignore')  # fix runtime error when dividing by zero
 
 parser = argparse.ArgumentParser()
 parser.add_argument('vectors_file', help='a file of word-features vectors', type=str)
 parser.add_argument('--vocab_file', help='a file of vocabulary words; if not given, one will be generated \
 from vectors_file', default=None, type=str)
-parser.add_argument('--source_dir', help="a directory containing lists of word pairs; requires a value for output_dir",
+parser.add_argument('--source_dir',
+                    help="an optional directory containing lists of word pairs to score;\
+                     requires a value for output_dir",
                     default=None, type=str)
 parser.add_argument('--output_dir', help="a directory to write relatedness value files to", default=None, type=str)
 args = parser.parse_args()

@@ -23,7 +23,7 @@ import argparse
 
 # Read in options.
 parser = argparse.ArgumentParser()
-parser.add_argument('wordlists_dir', help='directory where preprocessed word lists are stored', type=str)
+parser.add_argument('wordlists_dir', help='directory where individual word lists by ID are stored', type=str)
 parser.add_argument('wordpairs_dir', help='directory in which to store word pair lists after processing wordlists_dir',
                     type=str)
 parser.add_argument('--ID_label_file', help='optional file of <ID, label> pairs, to be split into individual files',

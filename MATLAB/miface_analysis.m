@@ -7,7 +7,7 @@ dendro_fail_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/
 
 scoresList = dir([scores_dir '*_scores.txt']);
 labelsList = dir([labels_dir '*_labels.txt']);
-inums = importdata('/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/ID_list.txt');
+inums = importdata('/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/ID_list_sorted.txt');
 
 N = size(scoresList);
 for k = 1:N
