@@ -1,13 +1,13 @@
-scores_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/Score_Lists/';
-labels_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/Label_Lists/';
-output_pass_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/MATLAB/Output/Pass/';
-dendro_pass_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/MATLAB/Dendrograms/Pass/';
-output_fail_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/MATLAB/Output/Fail/';
-dendro_fail_dir = '/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/MATLAB/Dendrograms/Fail/';
+scores_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/Score_Lists/';
+labels_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/Label_Lists/';
+output_pass_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/MATLAB/Output/Pass/';
+dendro_pass_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/MATLAB/Dendrograms/Pass/';
+output_fail_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/MATLAB/Output/Fail/';
+dendro_fail_dir = '/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/MATLAB/Dendrograms/Fail/';
 
 scoresList = dir([scores_dir '*_scores.txt']);
 labelsList = dir([labels_dir '*_labels.txt']);
-inums = importdata('/Users/body_LAB/Documents/MiFace/NLP/Kyi_Oster_Data/Analysis/Scores/ID_list_sorted.txt');
+inums = importdata('/Users/body_LAB/Documents/MiFace/NLP/Haidt-Keltner_Data/Analysis/Scores/ID_list_sorted.txt');
 
 N = size(scoresList);
 for k = 1:N
