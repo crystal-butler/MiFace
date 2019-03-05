@@ -113,7 +113,7 @@ if __name__ == "__main__":
                     ID = file.rstrip().split("_")[0]  # relies on file name beginning with ID_
 
                     # On Mac, automatically generated .DS_Store files will cause an error, so ignore hidden files.
-                    if not (file.startswith('.')):
+                    if not ((file.startswith('.')) or (file == "ID_list.txt")):
                         # Get all our needed files open for business.
                         f_in = open(subdir + '/' + file, 'r')
                         f_out = open(args.output_dir + file, 'w')
