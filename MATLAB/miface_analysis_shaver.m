@@ -1,9 +1,9 @@
 scores_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/Score_Lists/';
 labels_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/Label_Lists/';
-output_pass_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/MATLAB/Output/Pass/';
-dendro_pass_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/MATLAB/Dendrograms/Pass/';
-output_fail_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/MATLAB/Output/Fail/';
-dendro_fail_dir = '/Users/body_LAB/Documents/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/Scores/MATLAB/Dendrograms/Fail/';
+output_pass_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/MATLAB/Output/Pass/';
+dendro_pass_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/MATLAB/Dendrograms/Pass/';
+output_fail_dir = '/Users/body_LAB/Documents/MiFace/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/MATLAB/Output/Fail/';
+dendro_fail_dir = '/Users/body_LAB/Documents/Conferences_Applications/APA_TMS_2019/Shaver_Comparison/Analysis/MATLAB/Dendrograms/Fail/';
 
 scoresList = dir([scores_dir '*_scores.txt']);
 labelsList = dir([labels_dir '*_labels.txt']);
@@ -19,7 +19,7 @@ for k = 1:N
     sqM = squareform(distances);
     link_a_cheb = linkage(sqM, 'average', 'chebychev');
     coph = cophenet(link_a_cheb, distances);
-    clusters = cluster(link_a_cheb, 'cutoff', 0.8375, 'criterion', 'distance');
+    clusters = cluster(link_a_cheb, 'cutoff', 0.685, 'criterion', 'distance');
     uq = unique(clusters);
     cnt = [uq, histc(clusters(:), uq)];
     pct = max(cnt(:,2))/sum(cnt(:,2));
@@ -30,31 +30,42 @@ for k = 1:N
     
     % Build the dendrogram figure.
     fig = figure;
-    fig.OuterPosition = [76 76 1540 840];
+    fig.Position = [76 76 2400 1980];
     fig.PaperUnits = 'inches';
-    fig.PaperPosition = [0 0 16 8];
-    % Uncomment the next line to wait for user input before proceeding.
-    %pause;
-    H = dendrogram(link_a_cheb, 0, 'reorder', leaf_order, 'ColorThreshold', 'default', 'Labels', labels);
+    fig.PaperSize = [24 14];
+    fig.PaperPosition = [0 0 54 14];
+    fig.Renderer = 'painters';    
+    
+    [H, T, outperm] = dendrogram(link_a_cheb, 40, 'reorder', leaf_order, 'ColorThreshold', (0.73*max(link_a_cheb(:,3))), 'Labels', labels);
     ax = gca;
-    ax.FontSize = 16;
-    ax.XTickLabelRotation = 45;
+    ax.FontSize = 14;
+    ax.XTickLabelRotation = 90;
+    ax.XLim = [0 40];
     ax.YLim = [0 1];
-    hline = refline(0,.8375);
+    ax.YTick = [0.0 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.0];
+    
+    hline = refline(0,.685);
     hline.Color = [.8 .8 .8];
     hline.LineWidth = 1.5;
     set(H,'LineWidth',1.5);
+    figure(fig);
+    % Uncomment the next line to wait for user input before proceeding.
+    pause;
     
     % Save dendrogram and output files, with directory based on pass/fail status.
-    if (pct >= .75) 
+    if (pct >= .17)
         od = output_pass_dir;
         dd = dendro_pass_dir;
     else
         od = output_fail_dir;
         dd = dendro_fail_dir;
     end
-    figname = strcat(dd, num2str(inums(k)), '_dendrogram.png');
-    print(fig, figname, '-dpng');
+    outperm_file = fopen(strcat(od, num2str(inums(k)), '_outperms.txt'), 'w');
+    fprintf(outperm_file, '%d\n', outperm);
+    fclose(outperm_file);
+    T_file = fopen(strcat(od, num2str(inums(k)), '_T.txt'), 'w');
+    fprintf(T_file, '%d\n', T);
+    fclose(T_file);
     fileID = fopen(strcat(od, num2str(inums(k)), '_output.txt'), 'w');
     fprintf(fileID,'%12s\n', strcat(num2str(inums(k)), '_output.txt'));
     fprintf(fileID, 'coph:\t%6.4f\n', coph);
@@ -63,11 +74,13 @@ for k = 1:N
         fprintf(fileID, '%3i %3i\n', cnt(j,:));
     end
     fprintf(fileID, 'pct best cluster:\t%6.4f\n', pct);
-    if (pct >= .75) 
+    if (pct >= .17) 
         pf = 'pass'; 
         else pf = 'fail';
     end
     fprintf(fileID, '%6s\n', pf);
+    figname = strcat(dd, num2str(inums(k)), '_dendrogram');
+    print(fig, figname, '-depsc');
     
     % Close the output file and dendrogram figure.
     fclose(fileID);
