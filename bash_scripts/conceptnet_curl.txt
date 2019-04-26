@@ -1,1 +1,3 @@
-while read word1 word2; do curl "http://api.conceptnet.io/relatedness?node1=/c/en/$word1&node2=/c/en/$word2" | jq '.value'; sleep 1; done < FE_Pairs.txt > ../Word_Pair_Scores/FE_pairs_conceptnet.txt
+version https://git-lfs.github.com/spec/v1
+oid sha256:0f727dabbfaa5384ee21fb50bc69bbb7243592153f23d5da8dc289748895ba2b
+size 198
