@@ -1,19 +1,22 @@
 # Crystal Butler
-# 2019/04/25
+# 2019/04/29
 # Get synonyms for a list of newline-separated tokens from
 # https://words.bighugelabs.com/.
+
+import argparse
+import requests
+import jq
 
 API_KEY = "e071a5dc3c9d18ac7900fe6f98e72706"
 BASE_URL = "http://words.bighugelabs.com/api/2/"
 NEAR = ["syn", "rel", "sim"]  # get synonyms, related words, and similar words
 
-import argparse
-import requests
 
 parser = argparse.ArgumentParser()
 parser.add_argument('vocab_file', help="an input list of newline-separated tokens", type=str)
 parser.add_argument('syn_file', help="output file of tokens and their synonyms", type=str)
 args = parser.parse_args()
+
 
 def get_synonyms(token):
     lookup_url = "".join([BASE_URL, API_KEY, "/", token, "/json"])  # other response formats are text, xml, php
@@ -44,8 +47,9 @@ if __name__ == "__main__":
         while token:
             near_token = get_synonyms(token)
             if near_token:
-                o.write("{}\n".format(token))
+                o.write("{} ".format(token))
                 for n in near_token:
-                    o.write("{}\n".format(n))
+                    o.write("{} ".format(n))
+                o.write("\n")  # newline separate each vocabulary word
             line = f.readline()
             token = line.strip()
