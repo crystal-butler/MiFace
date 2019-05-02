@@ -59,4 +59,4 @@ if __name__ == "__main__":
                 o.write("\n")  # newline separate each vocabulary word
             line = f.readline()
             token = line.strip()
-            time.sleep(5)  # avoid exceeding the daily request limit
+            time.sleep(4)  # avoid exceeding the daily request limit
