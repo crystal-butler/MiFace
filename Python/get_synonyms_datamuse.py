@@ -1,27 +1,24 @@
 # Crystal Butler
-# 2019/05/02
+# 2019/05/05
 # Get synonyms for a list of newline-separated tokens from
-# https://dictionaryapi.com/products/api-collegiate-thesaurus.
+# https://api.datamuse.com/.
 
 import argparse
 import requests
-import re
 import time
-from lxml import etree
+import json
 
-BASE_URL = "https://www.dictionaryapi.com/api/v1/references/thesaurus/"
-RESPONSE_TYPE = "xml"  # also available as giant mess of deeply nested JSON
+BASE_URL = "https://api.datamuse.com/words?rel_syn="
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('vocab_file', help="an input list of newline-separated tokens", type=str)
 parser.add_argument('words_file', help="output file of tokens and their synonym texts", type=str)
-parser.add_argument('api_key', help="the API request key")
 args = parser.parse_args()
 
 
 def get_synonym_words(token):
-    lookup_url = "".join([BASE_URL, RESPONSE_TYPE, "/", token, "?key=", args.api_key])
+    lookup_url = "".join([BASE_URL, token])
     syn_words = []
     error_count = 0
     try:
@@ -37,14 +34,11 @@ def get_synonym_words(token):
         if (error_count > 60):
             return None
     try:
-        tree = etree.fromstring(response.content)
+        data = json.loads(response.content)
     except SyntaxError:  # occurs if response.content is "b'Results not found'"
         return syn_words
-    response_list = tree.xpath("//entry/sens/*[self::mc or self::vi or self::syn or self::rel]//text()")
-    for blurb in response_list:
-        temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', blurb))
-        for t in temp:
-            syn_words.append(t)
+    for dict in data:
+        syn_words.append(dict['word'])
     return syn_words
 
 
@@ -64,4 +58,4 @@ if __name__ == "__main__":
                 o.write("\n")  # newline separate each vocabulary word
             line = f.readline()
             token = line.strip()
-            time.sleep(1)  # avoid exceeding the daily request limit
+            # time.sleep(1)  # avoid exceeding the daily request limit
