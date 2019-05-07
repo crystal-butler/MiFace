@@ -22,7 +22,6 @@ args = parser.parse_args()
 
 def get_definition_words(token):
     lookup_url = "".join([BASE_URL, token, "/definitions/?api_key=", args.api_key])
-    print(lookup_url)
     def_words = []
     error_count = 0
     try:
@@ -40,8 +39,6 @@ def get_definition_words(token):
     data = json.loads(response.content)
     if data:
         for dict in data:
-            print(token)
-            print(dict)
             def_text = dict['text']
             temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', def_text))
             for t in temp:
