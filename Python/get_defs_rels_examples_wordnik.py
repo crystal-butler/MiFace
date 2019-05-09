@@ -39,10 +39,24 @@ def get_definition_words(token):
     data = json.loads(response.content)
     if data:
         for dict in data:
-            def_text = dict['text']
-            temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', def_text))
-            for t in temp:
-                def_words.append(t)
+            try:
+                def_text = dict['text']
+                temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', def_text))
+                for t in temp:
+                    def_words.append(t)
+            except KeyError:
+                print("error in definition lookup on {}".format(token))
+                print(response.headers)
+                print(dict)
+                if response.headers['X-RateLimit-Remaining-hour'] == 0:
+                    while response.headers['X-RateLimit-Remaining-hour'] == 0:
+                        time.sleep(3600)
+                    def_text = dict['text']
+                    temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', def_text))
+                    for t in temp:
+                        def_words.append(t)
+                else:
+                    continue# we hit a dictionary missing the expected key
     return def_words
 
 
@@ -65,10 +79,24 @@ def get_related_words(token):
     data = json.loads(response.content)
     if data:
         for dict in data:
-            if dict['relationshipType'] in RELATED:
-                rel_text = dict['words']
-                for t in rel_text:
-                    rel_words.append(t)
+            try:
+                if dict['relationshipType'] in RELATED:
+                    rel_text = dict['words']
+                    for t in rel_text:
+                        rel_words.append(t)
+            except KeyError:
+                print("error in relatedWords lookup on {}".format(token))
+                print(response.headers)
+                print(dict)
+                if response.headers['X-RateLimit-Remaining-hour'] == 0:
+                    while response.headers['X-RateLimit-Remaining-hour'] == 0:
+                        time.sleep(3600)
+                    if dict['relationshipType'] in RELATED:
+                        rel_text = dict['words']
+                        for t in rel_text:
+                            rel_words.append(t)
+                else:
+                    continue  # we hit a dictionary missing the expected key
     return rel_words
 
 
@@ -91,10 +119,24 @@ def get_examples(token):
     data = json.loads(response.content)
     if data:
         for dict in data['examples']:
-            ex_text = dict['text']
-            temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', ex_text))
-            for t in temp:
-                ex_words.append(t)
+            try:
+                ex_text = dict['text']
+                temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', ex_text))
+                for t in temp:
+                    ex_words.append(t)
+            except KeyError:
+                print("error in examples lookup on {}".format(token))
+                print(response.headers)
+                print(dict)
+                if response.headers['X-RateLimit-Remaining-hour'] == 0:
+                    while response.headers['X-RateLimit-Remaining-hour'] == 0:
+                        time.sleep(3600)
+                    ex_text = dict['text']
+                    temp = (re.findall(r'[a-zA-Z]+[\_\-\']?[a-zA-Z]+', ex_text))
+                    for t in temp:
+                        ex_words.append(t)
+                else:
+                    continue  # we hit a dictionary missing the expected key
     return ex_words
 
 
@@ -125,7 +167,7 @@ if __name__ == "__main__":
 
             examples = get_examples(token)
             if (examples is None):  # we failed to get a valid response for an hour
-                print("Program failed while looking up examples for{}".format(token))
+                print("Program failed while looking up examples for {}".format(token))
                 break
             if examples:
                 o.write("{} ".format(token))
