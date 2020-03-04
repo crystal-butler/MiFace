@@ -12,10 +12,12 @@ import argparse
 # Read in options.
 parser = argparse.ArgumentParser()
 parser.add_argument('source_dir', help="a directory containing lists of words to check", type=str)
-parser.add_argument('error_dir', help="a directory to write vocabulary errors to", type=str)
+parser.add_argument('error_dir', help="a directory where vocabulary errors are written", type=str)
+parser.add_argument('vocab_out', help="a file where words successfully found in the reference vocabulary are saved", default=None, type=str)
 parser.add_argument('--vectors_file', help='a file of word-features vectors', default=None, type=str)
-parser.add_argument('--vocab_file', help='a file of vocabulary words; if not given, one will be generated \
+parser.add_argument('--vocab_ref', help='a file of vocabulary words; if not given, one will be generated \
 from vectors_file', default=None, type=str)
+
 args = parser.parse_args()
 
 # Constants, used to format output file names.
@@ -26,14 +28,14 @@ SUFFIX = ".txt"
 def make_vocab():
     vals = []
     vocab = []
-    if(args.vocab_file is None):
+    if(args.vocab_ref is None):
         with open(args.vectors_file, 'r') as f:
             for line in f:
                 vals = line.rstrip().split(' ')
                 vocab.append(vals[0])
             return vocab
     else:
-        with open(args.vocab_file, 'r') as f:
+        with open(args.vocab_ref, 'r') as f:
             for line in f:
                 for line in f:
                     vals = line.rstrip().split(' ')
@@ -52,16 +54,18 @@ def get_labels(file):
 
 
 # Check a label list against the vocabulary, and write any errors to error_dir.
-def check_vocab(ID, labels, vocab, err_file):
-    with open(err_file, 'w') as e:
+def check_vocab(ID, labels, vocab, err_file, write_file):
+    with open(err_file, 'w') as e, open(write_file, 'a') as w:
         for label in labels:
             if (label not in vocab):
                 e.write("{}\n".format(label))
+            else:
+                w.write("{}\n".format(label))
 
 
 if __name__ == "__main__":
     s_dir = os.fsencode(args.source_dir)
-    if ((args.vocab_file is not None) or (args.vectors_file is not None)):
+    if ((args.vocab_ref is not None) or (args.vectors_file is not None)):
         vocab = make_vocab()
     else:
         print("Sorry, I need either a vocabulary file or a vectors file. Exiting...")
@@ -75,4 +79,4 @@ if __name__ == "__main__":
         in_file = os.path.join(args.source_dir, filename)
         err_file = os.path.join(args.error_dir, ID + "_errors" + SUFFIX)
         labels = get_labels(in_file)
-        check_vocab(ID, labels, vocab, err_file)
+        check_vocab(ID, labels, vocab, err_file, args.vocab_out)
