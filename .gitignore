@@ -2,3 +2,4 @@ dicts.txt
 .DS_Store
 venv/
 **/word_vectors
+**/vocab_files
