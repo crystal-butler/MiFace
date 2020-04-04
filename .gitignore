@@ -3,3 +3,5 @@ dicts.txt
 venv/
 **/word_vectors
 **/vocab_files
+**/BERT.txt
+**/embeddings_word
