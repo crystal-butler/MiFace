@@ -5,3 +5,4 @@ venv/
 **/vocab_files
 **/BERT.txt
 **/embeddings_word
+**/embeddings_context_vocab/*.txt
