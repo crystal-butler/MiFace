@@ -6,3 +6,4 @@ venv/
 **/BERT.txt
 **/embeddings_word
 **/embeddings_context_vocab/*.txt
+**/data
