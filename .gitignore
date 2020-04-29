@@ -7,4 +7,4 @@ venv/
 **/embeddings_word
 **/embeddings_context_vocab/*.txt
 **/data
-!**/data/vocab*
+!/Python/data/vocab*
