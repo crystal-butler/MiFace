@@ -176,4 +176,4 @@ if __name__ == "__main__":
                 if relatedness == -100:
                     print("Oops! One of your words wasn't in the vocabulary.")
                 else:
-                    print("From -1 to 1, the simlarity of %s and %s is %f." % (input_term1, input_term2, relatedness))
+                    print("From -1 to 1, the similarity of %s and %s is %f." % (input_term1, input_term2, relatedness))
