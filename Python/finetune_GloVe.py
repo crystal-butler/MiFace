@@ -2,6 +2,9 @@
 
 import mittens
 import csv
+import re
+import subprocess
+import os
 import numpy as np
 from spacy.lang.en import English
 
@@ -15,22 +18,33 @@ def embeddings_to_dict(embeddings_path):
     return embed
 
 
-def tokenize_text(text_path):
+def tokenize_text(text_path, tokenized_text_path):
     nlp = English()
     # Create a Tokenizer with the default settings for English
     # including punctuation rules and exceptions
     tokenizer = nlp.Defaults.create_tokenizer(nlp)
-    tokens = []
-    with open(text_path, encoding='utf-8') as f:
-        for line in f:
-            tokens.append(tokenizer(line))
-    
+    with open(text_path, encoding='utf-8') as f_in, open(tokenized_text_path, 'a', encoding='utf-8') as f_out:
+        for line in f_in:
+            tokens = tokenizer(line)
+            for token in tokens:
+                if (re.match(r"(\w+)", token.text)) or (re.match(r"(\n)", token.text)):
+                    f_out.write(token.text.lower() + " ")
+
+
+def execute_C(command):
+    s = subprocess.run(command, shell = True) 
+    print(", return code", s)
 
 
 if __name__=='__main__':
     embeddings_path = "data/glove.840B.300d.txt"
     text_path = "data/all_dictionaries_synonyms_cleaned_sorted.txt"
-    converted_embeddings = embeddings_to_dict(embeddings_path)
-    print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
-    tokens = tokenize_text(text_path)
-    print(f'Length of the tokens array is {len(tokens)}.')
+    tokenized_text_path = "data/all_dicts_syns_tokenized.txt"
+    create_vocab_command = ["./GloVe/build/vocab_count < data/all_dicts_syns_tokenized.txt > data/all_dicts_syns_vocab.txt"]
+    create_cooccurence_matrix_command = ["./Glove/build/cooccur -vocab-file data/all_dicts_syns_vocab.txt < data/all_dicts_syns_tokenized.txt > data/all_dicts_syns_cooccurences.bin"]
+    # converted_embeddings = embeddings_to_dict(embeddings_path)
+    # print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
+    # tokenize_text(text_path, tokenized_text_path)
+    # print(f'Tokenized text saved to {tokenized_text_path}.')
+    # execute_C(create_vocab_command)
+    execute_C(create_cooccurence_matrix_command)
