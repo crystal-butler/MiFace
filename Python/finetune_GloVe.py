@@ -42,7 +42,7 @@ if __name__=='__main__':
     tokenized_text_path = "data/all_dicts_syns_tokenized.txt"
     create_vocab_command = ["./GloVe/build/vocab_count < data/all_dicts_syns_tokenized.txt > data/all_dicts_syns_vocab.txt"]
     create_cooccurence_matrix_command = ["./GloVe/build/cooccur -vocab-file data/all_dicts_syns_vocab.txt < data/all_dicts_syns_tokenized.txt > data/all_dicts_syns_cooccurences.bin"]
-    create_cooccurence_shuffle_command = ["./Glove/build/shuffle -memory = 8.0 < data/all_dicts_syns_cooccurences.bin > data/all_dicts_syns_cooccurences.shuf.bin"]
+    create_cooccurence_shuffle_command = ["./GloVe/build/shuffle -memory = 8.0 < data/all_dicts_syns_cooccurences.bin > data/all_dicts_syns_cooccurences.shuf.bin"]
     create_model_command = ["./GloVe/build/glove -input-file data/all_dicts_syns_cooccurences.shuf.bin, -vocab-file data/all_dicts_syns_vocab.txt -save-file data/embeddings_all_dicts_syns.txt"]
     # converted_embeddings = embeddings_to_dict(embeddings_path)
     # print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
