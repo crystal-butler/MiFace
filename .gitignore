@@ -8,3 +8,4 @@ venv/
 **/embeddings_context_vocab/*.txt
 **/data
 !/Python/data/vocab*
+*-checkpoint.ipynb
