@@ -51,4 +51,4 @@ if __name__=='__main__':
     # execute_C(create_vocab_command)
     # execute_C(create_cooccurence_matrix_command)
     execute_C(create_cooccurence_shuffle_command)
-    execute_C(create_model_command)
+    # execute_C(create_model_command)
