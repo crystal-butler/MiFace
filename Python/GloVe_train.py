@@ -1,21 +1,9 @@
-# Adapted from https://towardsdatascience.com/fine-tune-glove-embeddings-using-mittens-89b5f3fe4c39
-
-import mittens
+from sklearn.feature_extraction.text import CountVectorizer
 import csv
 import re
 import subprocess
 import os
-import numpy as np
 from spacy.lang.en import English
-
-
-# Convert GloVe embeddings to a dictionary for use with Mittens.
-def embeddings_to_dict(embeddings_path):
-    with open(embeddings_path, encoding='utf-8') as f:
-        reader = csv.reader(f, delimiter=' ',quoting=csv.QUOTE_NONE)
-        embed = {line[0]: np.array(list(map(float, line[1:])))
-                for line in reader}
-    return embed
 
 
 def tokenize_text(text_path, tokenized_text_path):
@@ -42,13 +30,12 @@ if __name__=='__main__':
     tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
     create_vocab_command = ["./GloVe/build/vocab_count < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_vocab.txt"]
     create_cooccurrence_matrix_command = ["./GloVe/build/cooccur -vocab-file data/all_dicts_syns_filtered_vocab.txt < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_cooccurrences.bin"]
-    create_cooccurrence_shuffle_command = ["./GloVe/build/shuffle -memory = 8.0 < data/all_dicts_syns_filtered_cooccurrences.bin > data/all_dicts_syns_filtered_cooccurrences.shuf.bin"]
+    # create_cooccurrence_shuffle_command = ["./GloVe/build/shuffle -memory = 8.0 < data/all_dicts_syns_filtered_cooccurrences.bin > data/all_dicts_syns_filtered_cooccurrences.shuf.bin"]
     create_model_command = ["./GloVe/build/glove -input-file data/all_dicts_syns_filtered_cooccurrences.bin -vocab-file data/all_dicts_syns_filtered_vocab.txt -vector-size 300 -iter 100 -eta .01 -save-file data/embeddings_word/embeddings_all_dicts_syns_filtered-300-100"]
-    # converted_embeddings = embeddings_to_dict(embeddings_path)
-    # print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
-    # tokenize_text(text_path, tokenized_text_path)
-    # print(f'Tokenized text saved to {tokenized_text_path}.')
-    # execute_C(create_vocab_command)
-    # execute_C(create_cooccurrence_matrix_command)
+
+    tokenize_text(text_path, tokenized_text_path)
+    print(f'Tokenized text saved to {tokenized_text_path}.')
+    execute_C(create_vocab_command)
+    execute_C(create_cooccurrence_matrix_command)
     # execute_C(create_cooccurrence_shuffle_command)  # Executing this command always generates too many temp files, so skipping it.
     execute_C(create_model_command)
