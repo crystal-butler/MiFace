@@ -5,6 +5,7 @@ import os
 import numpy as np
 from spacy.lang.en import English
 from mittens import GloVe
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def tokenize_text(text_path, tokenized_text_path):
@@ -20,3 +21,45 @@ def tokenize_text(text_path, tokenized_text_path):
                     f_out.write(token.text.lower() + " ")
 
 
+def make_vocab(vocab_file):
+    vocab_list = []
+    with open(vocab_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            values = line.split()
+            vocab_list.append(values[0])
+            # print(f'Appended {values[0]} to vocab_list.')
+    return vocab_list
+
+
+def build_cooccurrence_array(vocab, tokenized_text):
+    vectorized_count = CountVectorizer(ngram_range=(1,1), vocabulary=vocab)
+    count_fit = vectorized_count.fit_transform(text)
+    count_matrix = (count_fit.T * count_fit)
+    count_matrix.setdiag(0)
+    cooccurrence_array = count_matrix.toarray()
+    return cooccurrence_array
+
+
+if __name__=='__main__':
+    embeddings_path = "data/glove.840B.300d.txt"
+    text_path = "data/all_dicts_syns_filtered.txt"
+    tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
+    
+    tokenize_text(text_path, tokenized_text_path)
+    print(f'Tokenized text saved to {tokenized_text_path}.')
+    
+    corpus_vocab = make_vocab("data/vocab_files/vocab_checked.txt")
+    print(corpus_vocab[0:10])
+   
+    text = []
+    with open(tokenized_text_path, 'r', encoding='utf-8') as f:
+        text.append(f.read())
+    cooccurrence_array = build_cooccurrence_array(corpus_vocab, text)
+
+    mittens_model = Mittens(n=300, max_iter=1000)
+    dicts_syns_filtered_embeddings = mittens_model.fit(
+        cooccurrence_array,
+        vocab = corpus_vocab,
+        initial_embedding_dict = converted_embeddings
+    )
+    print(f'\nThe first five embeddings are:j\n{dicts_syns_filtered_embeddings[0:5]}')
