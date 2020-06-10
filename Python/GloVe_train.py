@@ -25,17 +25,17 @@ def execute_C(command):
 
 
 if __name__=='__main__':
-    embeddings_path = "data/glove.840B.300d.txt"
     text_path = "data/all_dicts_syns_filtered.txt"
     tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
+    
     create_vocab_command = ["./GloVe/build/vocab_count < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_vocab.txt"]
     create_cooccurrence_matrix_command = ["./GloVe/build/cooccur -vocab-file data/all_dicts_syns_filtered_vocab.txt < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_cooccurrences.bin"]
     # create_cooccurrence_shuffle_command = ["./GloVe/build/shuffle -memory = 8.0 < data/all_dicts_syns_filtered_cooccurrences.bin > data/all_dicts_syns_filtered_cooccurrences.shuf.bin"]
     create_model_command = ["./GloVe/build/glove -input-file data/all_dicts_syns_filtered_cooccurrences.bin -vocab-file data/all_dicts_syns_filtered_vocab.txt -vector-size 300 -iter 100 -eta .01 -save-file data/embeddings_word/embeddings_all_dicts_syns_filtered-300-100"]
 
-    tokenize_text(text_path, tokenized_text_path)
-    print(f'Tokenized text saved to {tokenized_text_path}.')
-    execute_C(create_vocab_command)
-    execute_C(create_cooccurrence_matrix_command)
+    # tokenize_text(text_path, tokenized_text_path)
+    # print(f'Tokenized text saved to {tokenized_text_path}.')
+    # execute_C(create_vocab_command)
+    # execute_C(create_cooccurrence_matrix_command)
     # execute_C(create_cooccurrence_shuffle_command)  # Executing this command always generates too many temp files, so skipping it.
     execute_C(create_model_command)

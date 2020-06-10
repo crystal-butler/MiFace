@@ -55,13 +55,13 @@ if __name__=='__main__':
     embeddings_path = "data/glove.840B.300d.txt"
     text_path = "data/all_dicts_syns_filtered.txt"
     tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
-    embeddings_path_output = "data/embeddings_word/dicts_syns_filtered_embeddings.txt"
+    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns_filtered.txt"
     
     converted_embeddings = embeddings_to_dict(embeddings_path)
     print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
     
-    tokenize_text(text_path, tokenized_text_path)
-    print(f'Tokenized text saved to {tokenized_text_path}.')
+    # tokenize_text(text_path, tokenized_text_path)
+    # print(f'Tokenized text saved to {tokenized_text_path}.')
     
     corpus_vocab = make_vocab("data/vocab_files/vocab_checked.txt")
     print(corpus_vocab[0:10])
@@ -71,17 +71,20 @@ if __name__=='__main__':
         text.append(f.read())
     cooccurrence_array = build_cooccurrence_array(corpus_vocab, text)
 
-    mittens_model = Mittens(n=300, max_iter=10)
+    mittens_model = Mittens(n=300, max_iter=10000)
     dicts_syns_filtered_embeddings = mittens_model.fit(
         cooccurrence_array,
         vocab = corpus_vocab,
         initial_embedding_dict = converted_embeddings
     )
-    print(f'\nThe first five embeddings are:\n')
-    for n in range(0, 5):
-        print(dicts_syns_filtered_embeddings[n])
-    print(f'Length of dicts_syns_filtered_embeddings is {len(dicts_syns_filtered_embeddings)}')
+    # print(f'\nThe first embedding is:\n')
+    # for n in range(1):
+    #     print(dicts_syns_filtered_embeddings[n])
+    print(f'\n\nLength of dicts_syns_filtered_embeddings is {len(dicts_syns_filtered_embeddings)}')
     print(f'Length of corpus_vocab is {len(corpus_vocab)}')
     with open(embeddings_path_output, 'w', encoding='utf-8') as f:
         for word, embedding in zip(corpus_vocab, dicts_syns_filtered_embeddings):
-            f.write(word + ' ' + embedding + '\n')
+            f.write(word)
+            for value in embedding:
+                f.write(' ' + str(value))
+            f.write('\n')
