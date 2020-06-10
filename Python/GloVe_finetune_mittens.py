@@ -55,7 +55,7 @@ if __name__=='__main__':
     embeddings_path = "data/glove.840B.300d.txt"
     text_path = "data/all_dicts_syns_filtered.txt"
     tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
-    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns_filtered.txt"
+    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns_filtered-300-20000.txt"
     
     converted_embeddings = embeddings_to_dict(embeddings_path)
     print(f'Length of the embeddings dictionary is {len(converted_embeddings)}.')
@@ -64,14 +64,14 @@ if __name__=='__main__':
     # print(f'Tokenized text saved to {tokenized_text_path}.')
     
     corpus_vocab = make_vocab("data/vocab_files/vocab_checked.txt")
-    print(corpus_vocab[0:10])
+    # print(corpus_vocab[0:10])
    
     text = []
     with open(tokenized_text_path, 'r', encoding='utf-8') as f:
         text.append(f.read())
     cooccurrence_array = build_cooccurrence_array(corpus_vocab, text)
 
-    mittens_model = Mittens(n=300, max_iter=10000)
+    mittens_model = Mittens(n=300, max_iter=20000)
     dicts_syns_filtered_embeddings = mittens_model.fit(
         cooccurrence_array,
         vocab = corpus_vocab,

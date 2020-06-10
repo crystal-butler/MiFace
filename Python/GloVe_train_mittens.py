@@ -41,9 +41,9 @@ def build_cooccurrence_array(vocab, tokenized_text):
 
 
 if __name__=='__main__':
-    embeddings_path = "data/glove.840B.300d.txt"
     text_path = "data/all_dicts_syns_filtered.txt"
     tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
+    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns_filtered-300-20000.txt"
     
     tokenize_text(text_path, tokenized_text_path)
     print(f'Tokenized text saved to {tokenized_text_path}.')
@@ -56,9 +56,17 @@ if __name__=='__main__':
         text.append(f.read())
     cooccurrence_array = build_cooccurrence_array(corpus_vocab, text)
 
-    glove_model = GloVe(n=300, max_iter=1000)
+    glove_model = GloVe(n=300, max_iter=20000)
     dicts_syns_filtered_embeddings = glove_model.fit(cooccurrence_array)
     print(f'\nThe first five embeddings are:\n')
     for n in range(0, 5):
         print(dicts_syns_filtered_embeddings[n])
+    print(f'\n\nLength of dicts_syns_filtered_embeddings is {len(dicts_syns_filtered_embeddings)}')
+    print(f'Length of corpus_vocab is {len(corpus_vocab)}')
+    with open(embeddings_path_output, 'w', encoding='utf-8') as f:
+        for word, embedding in zip(corpus_vocab, dicts_syns_filtered_embeddings):
+            f.write(word)
+            for value in embedding:
+                f.write(' ' + str(value))
+            f.write('\n')
     

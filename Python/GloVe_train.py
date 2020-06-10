@@ -31,7 +31,7 @@ if __name__=='__main__':
     create_vocab_command = ["./GloVe/build/vocab_count < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_vocab.txt"]
     create_cooccurrence_matrix_command = ["./GloVe/build/cooccur -vocab-file data/all_dicts_syns_filtered_vocab.txt < data/all_dicts_syns_filtered_tokenized.txt > data/all_dicts_syns_filtered_cooccurrences.bin"]
     # create_cooccurrence_shuffle_command = ["./GloVe/build/shuffle -memory = 8.0 < data/all_dicts_syns_filtered_cooccurrences.bin > data/all_dicts_syns_filtered_cooccurrences.shuf.bin"]
-    create_model_command = ["./GloVe/build/glove -input-file data/all_dicts_syns_filtered_cooccurrences.bin -vocab-file data/all_dicts_syns_filtered_vocab.txt -vector-size 300 -iter 100 -eta .01 -save-file data/embeddings_word/embeddings_all_dicts_syns_filtered-300-100"]
+    create_model_command = ["./GloVe/build/glove -input-file data/all_dicts_syns_filtered_cooccurrences.bin -vocab-file data/all_dicts_syns_filtered_vocab.txt -vector-size 25 -iter 25 -eta .05 -save-file data/embeddings_word/embeddings_dicts_syns_filtered-25"]
 
     # tokenize_text(text_path, tokenized_text_path)
     # print(f'Tokenized text saved to {tokenized_text_path}.')
