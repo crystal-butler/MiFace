@@ -56,10 +56,9 @@ if __name__=='__main__':
         text.append(f.read())
     cooccurrence_array = build_cooccurrence_array(corpus_vocab, text)
 
-    mittens_model = Mittens(n=300, max_iter=1000)
-    dicts_syns_filtered_embeddings = mittens_model.fit(
-        cooccurrence_array,
-        vocab = corpus_vocab,
-        initial_embedding_dict = converted_embeddings
-    )
-    print(f'\nThe first five embeddings are:j\n{dicts_syns_filtered_embeddings[0:5]}')
+    glove_model = GloVe(n=300, max_iter=1000)
+    dicts_syns_filtered_embeddings = glove_model.fit(cooccurrence_array)
+    print(f'\nThe first five embeddings are:\n')
+    for n in range(0, 5):
+        print(dicts_syns_filtered_embeddings[n])
+    
