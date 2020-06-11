@@ -41,9 +41,9 @@ def build_cooccurrence_array(vocab, tokenized_text):
 
 
 if __name__=='__main__':
-    text_path = "data/all_dicts_syns_filtered.txt"
-    tokenized_text_path = "data/all_dicts_syns_filtered_tokenized.txt"
-    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns_filtered-300-20000.txt"
+    text_path = "data/all_dictionaries_synonyms_cleaned_sorted.txt"
+    tokenized_text_path = "data/all_dicts_syns_tokenized.txt"
+    embeddings_path_output = "data/embeddings_word/embeddings_dicts_syns-300-20000.txt"
     
     tokenize_text(text_path, tokenized_text_path)
     print(f'Tokenized text saved to {tokenized_text_path}.')
