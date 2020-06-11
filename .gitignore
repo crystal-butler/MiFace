@@ -9,3 +9,4 @@ venv/
 **/data
 !/Python/data/vocab*
 *-checkpoint.ipynb
+Python/temp_shuffle_*.bin
