@@ -62,6 +62,20 @@ def calculate_cluster_stats(linkage_matrix, distances_array):
     return cophenetic_coefficient, cluster_membership, pct
 
 
+def make_output_subdirs():
+    if not os.path.exists(args.clustering_dir):
+        os.makedirs(args.clustering_dir)
+    if not os.path.exists(os.path.join(args.clustering_dir, 'Dendrograms/Pass')):
+        os.makedirs(os.path.join(args.clustering_dir, 'Dendrograms/Pass'))
+    if not os.path.exists(os.path.join(args.clustering_dir, 'Dendrograms/Fail')):
+        os.makedirs(os.path.join(args.clustering_dir, 'Dendrograms/Fail'))
+    if not os.path.exists(os.path.join(args.clustering_dir, 'Statistics/Pass')):
+        os.makedirs(os.path.join(args.clustering_dir, 'Statistics/Pass'))
+    if not os.path.exists(os.path.join(args.clustering_dir, 'Statistics/Fail')):
+        os.makedirs(os.path.join(args.clustering_dir, 'Statistics/Fail'))
+    return
+
+
 def format_cluster_stats(cophenetic_coefficient, cluster_membership, pct):
     stats_printout = '---------------------------------------------------------------------------------\n'
     stats_printout += 'Agglomerative Hierarchical Clustering Statistics\n---------------------------------------------------------------------------------\n'
@@ -121,20 +135,31 @@ if __name__=='__main__':
             # Title the dendrogram, using the labels file name.
             dendro_name = extract_dendro_name(label_files[i])
             # Set up the plot.
-            plt.figure(figsize=(14, 9))  # (width, height) in inches
-            title = "Image: " + dendro_name
-            plt.title(title, fontsize=22)
+            plt.figure(figsize=(14, 8.5))  # (width, height) in inches
+            # title = "Image: " + dendro_name
+            # plt.title(title, fontsize=18)
             plt.rc('ytick',labelsize=16)
             y_label = 'Cophenetic Coefficient (Cutoff: ' + str(args.dendro_cutoff) + ')'
             plt.ylabel(y_label, fontsize=16)
             plt.axhline(y=args.dendro_cutoff, color="grey", linestyle="--")
-            plt.figtext(0.02, 0.12, stats_printout, horizontalalignment='left', verticalalignment='center', fontsize=14)
-            plt.subplots_adjust(bottom=0.42, top=0.95, right=0.98, left=0.06)
+            # plt.figtext(0.02, 0.12, stats_printout, horizontalalignment='left', verticalalignment='center', fontsize=14)
+            plt.subplots_adjust(bottom=0.22, top=0.95, right=0.98, left=0.06)
             # Create the dendrogram, with a cutoff specified during module invocation.
             dendro = sch.dendrogram(linkage_matrix, labels=labels_array, color_threshold=args.dendro_cutoff, \
                 leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
+
+            # Save out the plot and statistics.
+            make_output_subdirs()
+            if pct >= 75:
+                dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Pass/' + dendro_name + '.png')
+                stats_file = os.path.join(args.clustering_dir, 'Statistics/Pass/' + dendro_name + '.txt')
+            else:
+                dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Fail/' + dendro_name + '.png')
+                stats_file = os.path.join(args.clustering_dir, 'Statistics/Fail/' + dendro_name + '.txt')
+            with open(stats_file, 'w') as f_stat:
+                f_stat.write(stats_printout)
+            plt.savefig(dendro_file, format='png')
             plt.show()
 
-            # print(stats_printout)
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
