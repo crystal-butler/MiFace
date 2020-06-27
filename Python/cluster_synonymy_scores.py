@@ -83,14 +83,18 @@ if __name__=='__main__':
             dendro_name = extract_dendro_name(label_files[i])
             print(dendro_name)
             # Set up the plot.
-            plt.figure(figsize=(30, 15))
+            plt.figure(figsize=(14, 8.5))  # (width, height) in inches
             title = "Image: " + dendro_name
-            plt.title(title, fontsize = 22)
+            plt.title(title, fontsize=22)
             plt.rc('ytick',labelsize=16)
-            plt.ylabel('Cophenetic Coefficient (Distance)', fontsize=18)
+            y_label = 'Cophenetic Coefficient (Cutoff: ' + str(args.dendro_cutoff) + ')'
+            plt.ylabel(y_label, fontsize=16)
             plt.axhline(y=args.dendro_cutoff, color="grey", linestyle="--")
+            plt.figtext(0.1, 0.1, 'matplotlib', horizontalalignment='center', verticalalignment='center', fontsize=16)
+            plt.subplots_adjust(bottom=0.35, top=0.92, right=0.95, left=0.08)
             # Create the dendrogram, with a cutoff specified during module invocation.
-            dend = sch.dendrogram(lnk, labels=labels_array, color_threshold=0.8375, leaf_font_size=16, leaf_rotation=70, count_sort='ascending')
+            dendro = sch.dendrogram(linkage_matrix, labels=labels_array, color_threshold=args.dendro_cutoff, \
+                leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
             plt.show()
 
     else:
