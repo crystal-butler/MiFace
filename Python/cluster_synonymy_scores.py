@@ -42,6 +42,35 @@ def extract_dendro_name(file_path):
     return dendro_name
 
 
+def calculate_cluster_stats(linkage_matrix, distances_array):
+    # Get the values needed to determine cluster membership statistic.
+    clusters = sch.fcluster(linkage_matrix, args.dendro_cutoff, criterion='distance')
+    cluster_enumeration = np.unique(clusters)
+
+    # Calculate the cophenetic correlation coefficient statistic: closer to 1 is better.
+    cophenetic_coefficient, _ = sch.cophenet(linkage_matrix, distances_array)
+
+    # Get membership counts for each cluster.
+    cluster_membership = {}
+    for value in cluster_enumeration:
+        member_count = np.count_nonzero(clusters == value)
+        cluster_membership[value] = member_count
+    # Calculate the percentage membership in the largest cluster.
+    c_max = max(cluster_membership.values())
+    c_sum = sum(cluster_membership.values())
+    pct = 100 * (c_max / c_sum)
+    return cophenetic_coefficient, cluster_membership, pct
+
+
+def format_cluster_stats(cophenetic_coefficient, cluster_membership, pct):
+    stats_printout = ''
+    stats_printout += ('Cophenectic correlation coefficient: ' + str(cophenetic_coefficient) + '\n')
+    stats_printout += ('Cluster\tCount\t\n-------------------------\n')
+    for key in cluster_membership.keys():
+        stats_printout += (str(key) + '\t' + str(cluster_membership[key]) + '\n')
+    return stats_printout
+
+
 if __name__=='__main__':
     if (os.path.isdir(args.scores_dir) and os.path.isdir(args.labels_dir) and os.path.isdir(args.clustering_dir)):
         # We are reading from one or more files containing word pair synonymy scores
@@ -97,5 +126,8 @@ if __name__=='__main__':
                 leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
             plt.show()
 
+            cophenetic_coefficient, cluster_membership, pct = calculate_cluster_stats(linkage_matrix, distances_array)
+            stats_printout = format_cluster_stats(cophenetic_coefficient, cluster_membership, pct)
+            print(stats_printout)
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
