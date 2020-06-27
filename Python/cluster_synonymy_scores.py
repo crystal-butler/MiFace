@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('scores_dir', help='full path to a directory containing all pairs synonymy scores', type=str)
 parser.add_argument('labels_dir', help='full path to a directory containing labels for all pairs synonymy scores', type=str)
 parser.add_argument('clustering_dir', help='full path to a directory where clustering output will be written', type=str)
+parser.add_argument('dendro_cutoff', help='the cutoff value for agglomerative hierarchical clustering', type=float)
 args = parser.parse_args()
 
 
@@ -33,6 +34,12 @@ def build_linkage_matrix(distances_array):
         if linkage_matrix[i][2] < 0:
             linkage_matrix[i][2] = 0
     return linkage_matrix
+
+
+def extract_dendro_name(file_path):
+    file_name = os.path.basename(file_path)
+    dendro_name = file_name.split('.')[0]
+    return dendro_name
 
 
 if __name__=='__main__':
@@ -71,5 +78,20 @@ if __name__=='__main__':
             
             linkage_matrix = build_linkage_matrix(distances_array)
             assert linkage_matrix.shape[0] == (len(labels_array) - 1), "The linkage matrix and labels array have mismatched lengths."
+
+            # Title the dendrogram, using the labels file name.
+            dendro_name = extract_dendro_name(label_files[i])
+            print(dendro_name)
+            # Set up the plot.
+            plt.figure(figsize=(30, 15))
+            title = "Image: " + dendro_name
+            plt.title(title, fontsize = 22)
+            plt.rc('ytick',labelsize=16)
+            plt.ylabel('Cophenetic Coefficient (Distance)', fontsize=18)
+            plt.axhline(y=args.dendro_cutoff, color="grey", linestyle="--")
+            # Create the dendrogram, with a cutoff specified during module invocation.
+            dend = sch.dendrogram(lnk, labels=labels_array, color_threshold=0.8375, leaf_font_size=16, leaf_rotation=70, count_sort='ascending')
+            plt.show()
+
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
