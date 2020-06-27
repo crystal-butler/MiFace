@@ -159,7 +159,7 @@ if __name__=='__main__':
             with open(stats_file, 'w') as f_stat:
                 f_stat.write(stats_printout)
             plt.savefig(dendro_file, format='png')
-            plt.show()
+            # plt.show()
 
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
