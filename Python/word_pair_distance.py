@@ -38,6 +38,9 @@ if (args.output_dir is not None):
     if not os.path.exists(args.output_dir + "Label_Lists"):
         os.makedirs(args.output_dir + "Label_Lists")
     lab = args.output_dir + "Label_Lists/"
+    if not os.path.exists(args.output_dir + "Label_and_Score_Lists"):
+        os.makedirs(args.output_dir + "Label_and_Score_Lists")
+    labscr = args.output_dir + "Label_and_Score_Lists/"
     if not os.path.exists(args.output_dir + "Score_Lists"):
         os.makedirs(args.output_dir + "Score_Lists")
     scr = args.output_dir + "Score_Lists/"
@@ -116,10 +119,10 @@ if __name__ == "__main__":
                     if not ((file.startswith('.')) or (file == "ID_list.txt")):
                         # Get all our needed files open for business.
                         f_in = open(subdir + '/' + file, 'r')
-                        f_out = open(args.output_dir + file, 'w')
                         f_err = open(err + ID + "_errors.txt", 'w')
                         f_lab = open(lab + ID + "_labels.txt", 'w')
                         f_scr = open(scr + ID + "_scores.txt", 'w')
+                        f_labscr = open(labscr + ID, 'w')
 
                         # Calculate n-1 for original number of labels used to generate the all-pairs list.
                         cnt = 0
@@ -146,7 +149,7 @@ if __name__ == "__main__":
                                 # One of the words wasn't in the vocabulary, so write to the error file.
                                 f_err.write("%s%s%s\n" % (input_term1.ljust(20), input_term2.ljust(20), relatedness))
                             else:
-                                f_out.write("%s%s%s\n" % (input_term1.ljust(20), input_term2.ljust(20), relatedness))
+                                f_labscr.write("%s%s%s\n" % (input_term1.ljust(20), input_term2.ljust(20), relatedness))
                                 f_scr.write("%s\n" % (relatedness))
                                 if (linecnt == 1):
                                     f_lab.write("%s\n" % (array[0]))
@@ -155,10 +158,10 @@ if __name__ == "__main__":
                             linecnt -= 1
 
                         # Close up shop for this round of processing.
+                        f_labscr.close()
                         f_scr.close()
                         f_lab.close()
                         f_err.close()
-                        f_out.close()
                         f_in.close()
         else:
             print("The source directory is empty, or you input a file name rather than a directory name: exiting.")
