@@ -123,9 +123,9 @@ if __name__=='__main__':
             # The distances array should be a serialized upper triangular label x label matrix,
             # with entries below the diagonal omitted.
             if (expected_distances_count != len(distances_array)):
-                print(f'The number of values in the distances list is {len(distances_array)}, but it should be {expected_distances_count}.')
+                print(f'The number of values in the {score_files[i]} distances list is {len(distances_array)}, but it should be {expected_distances_count}.')
                 print('Skipping...')
-                break
+                continue
             
             linkage_matrix = build_linkage_matrix(distances_array)
             assert linkage_matrix.shape[0] == (len(labels_array) - 1), "The linkage matrix and labels array have mismatched lengths."
