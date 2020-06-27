@@ -30,8 +30,8 @@ def build_linkage_matrix(distances_array):
     linkage_matrix = sch.linkage(distances_array, 'average')
     # Fix distances that have become less than 0 due to floating point errors.
     for i in range(len(linkage_matrix)):
-        if lnk[i][2] < 0:
-            lnk[i][2] = 0
+        if linkage_matrix[i][2] < 0:
+            linkage_matrix[i][2] = 0
     return linkage_matrix
 
 
@@ -70,5 +70,6 @@ if __name__=='__main__':
                 break
             
             linkage_matrix = build_linkage_matrix(distances_array)
+            assert linkage_matrix.shape[0] == (len(labels_array) - 1), "The linkage matrix and labels array have mismatched lengths."
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
