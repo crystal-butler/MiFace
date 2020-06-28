@@ -11,6 +11,12 @@ parser.add_argument('bin_count', help='the number of bins used in the histogram'
 args = parser.parse_args()
 
 
+def make_output_subdir():
+    if not os.path.exists(args.histogram_dir):
+        os.makedirs(args.histogram_dir)
+    return
+
+
 def concatenate_scores():
     score_count = 0
     all_scores = []
@@ -50,7 +56,26 @@ def calculate_statistics(scores_array):
     return mu, sigma, a_min, a_max
 
 
+def make_output_filenames():
+    """Write statistics and histogram figure to the specified directory."""
+    hist_file = os.path.join(args.histogram_dir, 'distribution_histogram.png')
+    stats_file = os.path.join(args.clustering_dir, 'distribution_stats.txt')
+    return hist_file, stats_file
+
+
+def format_distribution_stats(mu, sigma, a_min, a_max):
+    """Pretty print layout for distribution statistics; can be appended to the histogram or saved out as a file."""
+    stats_printout = '---------------------------------------------------------------------------------\n'
+    stats_printout += 'Synonymy Scores Distribution Statistics\n---------------------------------------------------------------------------------\n'
+    stats_printout += ('Mean: ' + str(mu) + '\n')
+    stats_printout += ('Standard Deviation: ' + str(sigma) + '\n')
+    stats_printout += ('Minimum: ' + str(a_min) + '\n')
+    stats_printout += ('Maximum: ' + str(a_max) + '\n')
+    return stats_printout
+
+
 if __name__ == '__main__':
+    make_output_subdir()
     scores_all = concatenate_scores()
     print(f'Read in {len(scores_all)} scores.')
     scores_sorted = sort_scores(scores_all)
@@ -69,15 +94,19 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
     # Plot the histogram of the data.
     n, bins, patches = ax.hist(scores_trimmed, args.bin_count, density=1)
-    plt.rc('ytick',labelsize=16)
     # Add a 'best fit' line.
     y = ((1 / (np.sqrt(2 * np.pi) * sigma)) *
         np.exp(-0.5 * (1 / sigma * (bins - mu))**2))
     ax.plot(bins, y, '--')
     # Format the figure.
+    plt.rc('ytick',labelsize=16)
     ax.set_xlabel('Scores', fontsize=16)
     ax.set_ylabel('Probability density', fontsize=16)
     ax.set_title('Histogram of Synonymy Scores', fontsize=18)
 
+    # Save the figure and statistics.
+    hist_file, stats_file = make_output_filenames()
+
+    # Display the figure.
     plt.show()
     plt.close()
