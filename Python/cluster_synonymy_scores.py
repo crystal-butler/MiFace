@@ -38,12 +38,19 @@ def make_arrays(scores_path, labels_path):
     Transform similarity (proximity) scores to distances."""
     pairs_scores = pd.read_csv(scores_path, header=None)
     labels = pd.read_csv(labels_path, header=None)
-    pairs_distances = 1 - pairs_scores
-    distances_array = np.array(pairs_distances[0][:])
+    scores_array = np.array(pairs_scores[0][:])
+    scores_norm = normalize_array(scores_array)
+    distances_array = 1 - scores_norm
     labels_array = np.array(labels[0][:])
     assert len(pairs_scores[0]) == len(distances_array), "Scores dataframe and distances array should be the same length."
     assert len(labels[0]) == len(labels_array), "Labels dataframe and labels array should be the same length."
     return distances_array, labels_array
+
+
+def normalize_array(scores_array):
+    scores_norm = (scores_array - np.min(scores_array))/np.ptp(scores_array)
+    scores_norm = scores_norm.round(decimals=6)  # clean up floating point errors and reduce significant digits
+    return scores_norm
 
 
 def check_expected_distances_count(labels_array):
@@ -164,10 +171,10 @@ if __name__ == '__main__':
             # Title the dendrogram, using the labels file name.
             dendro_name = extract_dendro_name(labels_file, scores_file)
             # Set up the plot.
-            plt.figure(figsize=(14, 8.5))  # (width, height) in inches
+            fig, ax = plt.subplots(figsize=(14, 8.5))  #(width, height) in inches
             title = "Image: " + dendro_name
             plt.title(title, fontsize=18)
-            plt.rc('ytick',labelsize=16)
+            plt.rc('ytick',labelsize=14)
             y_label = 'Cophenetic Coefficient (Cutoff: ' + str(args.dendro_cutoff) + ')'
             plt.ylabel(y_label, fontsize=16)
             plt.axhline(y=args.dendro_cutoff, color="grey", linestyle="--")
@@ -175,7 +182,8 @@ if __name__ == '__main__':
             plt.subplots_adjust(bottom=0.22, top=0.95, right=0.98, left=0.06)
             # Create the dendrogram, with a cutoff specified during module invocation.
             dendro = sch.dendrogram(linkage_matrix, labels=labels_array, color_threshold=args.dendro_cutoff, \
-                leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
+                leaf_font_size=14, leaf_rotation=70, count_sort='ascending', ax=ax)
+            ax.set_ylim(0, 1)
 
             # Save out the plot and statistics.
             dendro_file, stats_file = make_output_filenames(pct, dendro_name)
