@@ -127,8 +127,8 @@ def classify_pass_fail(pct):
     return pass_fail
 
 
-def make_output_directories(pct):
-    """Write statistics and dendrograms to Pass or Fail Directories based on the clustering coherence test."""
+def make_output_filenames(pct, dendro_name):
+    """Write statistics and dendrograms to Pass or Fail directories based on the clustering coherence test."""
     if pct >= 75:
         dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Pass/' + dendro_name + '.png')
         stats_file = os.path.join(args.clustering_dir, 'Statistics/Pass/' + dendro_name + '.txt')
@@ -144,6 +144,7 @@ if __name__=='__main__':
         and their associated labels, clustering the distances between scores,
         generating a dendrogram and some statistics from the clustering, and writing
         that output to a file."""
+        make_output_subdirs()
         scores_files, labels_files = make_input_lists()
         for i in range(len(scores_files)):
             scores_file = os.path.join(args.scores_dir, scores_files[i])
@@ -177,11 +178,12 @@ if __name__=='__main__':
                 leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
 
             # Save out the plot and statistics.
-            dendro_file, stats_file = make_output_directories(pct)
+            dendro_file, stats_file = make_output_filenames(pct, dendro_name)
             with open(stats_file, 'w') as f_stat:
                 f_stat.write(stats_printout)
             plt.savefig(dendro_file, format='png')
             # plt.show()
+            plt.close()
 
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
