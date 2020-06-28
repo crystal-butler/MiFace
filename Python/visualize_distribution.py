@@ -32,7 +32,7 @@ def sort_scores(scores):
 
 
 def make_array(scores):
-    scores_array = np.array(scores)
+    scores_array = np.array(scores).astype(np.float)
     return(scores_array)
 
 
@@ -44,7 +44,13 @@ if __name__ == '__main__':
     scores_array = make_array(scores_sorted)
     assert (scores_array.shape)[0] == len(scores_sorted)
 
+    mu = np.mean(scores_array)
+    sigma = np.std(scores_array)
+    print(f'Mean of {scores_array.shape[0]} scores is {mu}, with standard deviation {sigma}.')
+
     # Build the histogram figure.
     fig, ax = plt.subplots()
     # Plot the histogram of the data.
     n, bins, patches = ax.hist(scores_array, args.bin_count, density=1)
+
+    # plt.show()
