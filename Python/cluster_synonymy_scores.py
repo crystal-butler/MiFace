@@ -138,7 +138,7 @@ def make_output_filenames(pct, dendro_name):
     return dendro_file, stats_file
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     if (os.path.isdir(args.scores_dir) and os.path.isdir(args.labels_dir) and os.path.isdir(args.clustering_dir)):
         """We are reading from one or more files containing word pair synonymy scores
         and their associated labels, clustering the distances between scores,
