@@ -18,10 +18,12 @@ def make_input_lists():
     labels_files = []
     for entry in sorted(os.listdir(args.scores_dir)):
         if os.path.isfile(os.path.join(args.scores_dir, entry)):
-            scores_files.append(entry)
+            if not entry.startswith('.'):
+                scores_files.append(entry)
     for entry in sorted(os.listdir(args.labels_dir)):
         if os.path.isfile(os.path.join(args.labels_dir, entry)):
-            labels_files.append(entry)
+            if not entry.startswith('.'):
+                labels_files.append(entry)
     if (len(scores_files) < 1 or len(labels_files) < 1):
         print ("Either scores or labels file list is empty: quitting!")
         sys.exit()
@@ -39,8 +41,8 @@ def make_arrays(scores_path, labels_path):
     pairs_distances = 1 - pairs_scores
     distances_array = np.array(pairs_distances[0][:])
     labels_array = np.array(labels[0][:])
-    assert(len(pairs_scores[0] == len(distances_array)))
-    assert(len(labels[0]) == len(labels_array))
+    assert len(pairs_scores[0]) == len(distances_array), "Scores dataframe and distances array should be the same length."
+    assert len(labels[0]) == len(labels_array), "Labels dataframe and labels array should be the same length."
     return distances_array, labels_array
 
 
@@ -61,20 +63,23 @@ def build_linkage_matrix(distances_array):
     return linkage_matrix
 
 
-def extract_dendro_name(file_path):
-    file_name = os.path.basename(file_path)
-    dendro_name = file_name.split('.')[0]
-    return dendro_name
+def extract_dendro_name(labels_file, scores_file):
+    labels_name = os.path.basename(labels_file)
+    scores_name = os.path.basename(scores_file)
+    labels_prefix = labels_name.split('.')[0]
+    scores_prefix = scores_name.split('.')[0]
+    assert labels_prefix == scores_prefix, "Labels and scores should have the same file name prefix."
+    return labels_prefix
 
 
 def calculate_cluster_stats(linkage_matrix, distances_array):
-    # Get the values needed to determine cluster membership statistic.
+    """Calculate clustering statistics for cophenetic coefficient correlation, 
+    the number of clusters, the count of labels per cluster and the 
+    percent membershp in the largest cluster."""
     clusters = sch.fcluster(linkage_matrix, args.dendro_cutoff, criterion='distance')
     cluster_enumeration = np.unique(clusters)
-
     # Calculate the cophenetic correlation coefficient statistic: closer to 1 is better.
     cophenetic_coefficient, _ = sch.cophenet(linkage_matrix, distances_array)
-
     # Get membership counts for each cluster.
     cluster_membership = {}
     for value in cluster_enumeration:
@@ -102,6 +107,7 @@ def make_output_subdirs():
 
 
 def format_cluster_stats(cophenetic_coefficient, cluster_membership, pct):
+    """Pretty print layout for clustering statistics; can be appended to the dendrogram or saved out as a file."""
     stats_printout = '---------------------------------------------------------------------------------\n'
     stats_printout += 'Agglomerative Hierarchical Clustering Statistics\n---------------------------------------------------------------------------------\n'
     stats_printout += ('Cophenectic correlation coefficient: ' + str(cophenetic_coefficient) + '\n')
@@ -116,8 +122,20 @@ def format_cluster_stats(cophenetic_coefficient, cluster_membership, pct):
 
 
 def classify_pass_fail(pct):
+    """The clustering coherence test is based on membership percentage in the largest cluster."""
     pass_fail = 'pass' if pct >= 75 else 'fail'
     return pass_fail
+
+
+def make_output_filenames(pct, dendro_name):
+    """Write statistics and dendrograms to Pass or Fail directories based on the clustering coherence test."""
+    if pct >= 75:
+        dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Pass/' + dendro_name + '.png')
+        stats_file = os.path.join(args.clustering_dir, 'Statistics/Pass/' + dendro_name + '.txt')
+    else:
+        dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Fail/' + dendro_name + '.png')
+        stats_file = os.path.join(args.clustering_dir, 'Statistics/Fail/' + dendro_name + '.txt')
+    return dendro_file, stats_file
 
 
 if __name__=='__main__':
@@ -126,16 +144,15 @@ if __name__=='__main__':
         and their associated labels, clustering the distances between scores,
         generating a dendrogram and some statistics from the clustering, and writing
         that output to a file."""
+        make_output_subdirs()
         scores_files, labels_files = make_input_lists()
         for i in range(len(scores_files)):
             scores_file = os.path.join(args.scores_dir, scores_files[i])
             labels_file = os.path.join(args.labels_dir, labels_files[i])
-            print(f'Creating arrays from {scores_file} and {labels_file}...')
             distances_array, labels_array = make_arrays(scores_file, labels_file)
             expected_distances_count = check_expected_distances_count(labels_array)
             if (expected_distances_count != len(distances_array)):
                 print(f'The number of values in the {scores_file} distances list is {len(distances_array)}, but it should be {expected_distances_count}.')
-                print('Skipping...')
                 input("Press Enter to continue...")
                 continue
             
@@ -145,7 +162,7 @@ if __name__=='__main__':
             stats_printout = format_cluster_stats(cophenetic_coefficient, cluster_membership, pct)
 
             # Title the dendrogram, using the labels file name.
-            dendro_name = extract_dendro_name(labels_files[i])
+            dendro_name = extract_dendro_name(labels_file, scores_file)
             # Set up the plot.
             plt.figure(figsize=(14, 8.5))  # (width, height) in inches
             title = "Image: " + dendro_name
@@ -161,17 +178,12 @@ if __name__=='__main__':
                 leaf_font_size=14, leaf_rotation=70, count_sort='ascending')
 
             # Save out the plot and statistics.
-            make_output_subdirs()
-            if pct >= 75:
-                dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Pass/' + dendro_name + '.png')
-                stats_file = os.path.join(args.clustering_dir, 'Statistics/Pass/' + dendro_name + '.txt')
-            else:
-                dendro_file = os.path.join(args.clustering_dir, 'Dendrograms/Fail/' + dendro_name + '.png')
-                stats_file = os.path.join(args.clustering_dir, 'Statistics/Fail/' + dendro_name + '.txt')
+            dendro_file, stats_file = make_output_filenames(pct, dendro_name)
             with open(stats_file, 'w') as f_stat:
                 f_stat.write(stats_printout)
             plt.savefig(dendro_file, format='png')
-            plt.show()
+            # plt.show()
+            plt.close()
 
     else:
         print("Be sure to include options for scores, labels and output directories when calling this module.")
