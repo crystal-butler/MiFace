@@ -7,11 +7,12 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('scores_dir', help='full path to a directory containing all pairs synonymy scores', type=str)
 parser.add_argument('histogram_dir', help='full path to a directory where the histogram plot will be written', type=str)
-parser.add_argument('bin_count', help='the number of bins used in the histogram', type=float)
+parser.add_argument('bin_count', help='the number of bins used in the histogram', type=int)
 args = parser.parse_args()
 
 
 def concatenate_scores():
+    score_count = 0
     all_scores = []
     for entry in sorted(os.listdir(args.scores_dir)):
         if os.path.isfile(os.path.join(args.scores_dir, entry)):
@@ -20,13 +21,30 @@ def concatenate_scores():
                     for line in f:
                         score = line.strip()
                         all_scores.append(score)
-    print(len(all_scores))
+                        score_count += 1
+    assert len(all_scores) == score_count
     return all_scores
 
 
-def sort_scores(all_scores):
+def sort_scores(scores):
+    scores.sort()
+    return scores
 
+
+def make_array(scores):
+    scores_array = np.array(scores)
+    return(scores_array)
 
 
 if __name__ == '__main__':
-    all_scores = concatenate_scores()
+    scores_all = concatenate_scores()
+    print(len(scores_all))
+    scores_sorted = sort_scores(scores_all)
+    assert len(scores_all) == len(scores_sorted)
+    scores_array = make_array(scores_sorted)
+    assert (scores_array.shape)[0] == len(scores_sorted)
+
+    # Build the histogram figure.
+    fig, ax = plt.subplots()
+    # Plot the histogram of the data.
+    n, bins, patches = ax.hist(scores_array, args.bin_count, density=1)
