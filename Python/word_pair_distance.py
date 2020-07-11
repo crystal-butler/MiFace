@@ -122,7 +122,7 @@ if __name__ == "__main__":
                         f_err = open(err + ID + "_errors.txt", 'w')
                         f_lab = open(lab + ID + "_labels.txt", 'w')
                         f_scr = open(scr + ID + "_scores.txt", 'w')
-                        f_labscr = open(labscr + ID, 'w')
+                        f_labscr = open(labscr + ID + ".txt", 'w')
 
                         # Calculate n-1 for original number of labels used to generate the all-pairs list.
                         cnt = 0
