@@ -11,3 +11,8 @@ venv/
 *-checkpoint.ipynb
 Python/temp_shuffle_*.bin
 **/counter-fitting
+**/wordsim
+**/hunmisc
+**/4lang
+**/retrofitting
+**/GloVe
