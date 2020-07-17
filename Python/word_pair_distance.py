@@ -49,10 +49,10 @@ if (args.output_dir is not None):
 def generate():
     if args.vocab_file is not None:
         # Parse the optionally provided vocabulary file.
-        with open(args.vocab_file, 'r') as f:
+        with open(args.vocab_file, 'r', encoding='utf-8') as f:
             words = [x.rstrip().split(' ')[0] for x in f.readlines()]
     # Semantic vectors (or word embeddings) are the result of training a ML model to represent word relatedness.
-    with open(args.vectors_file, 'r') as f:
+    with open(args.vectors_file, 'r', encoding='utf-8', errors='ignore') as f:
         # The pre-trained semantic vectors will go into a Python dictionary.
         # Dictionaries are key:value indexed; lookup is done via hash function and should be O(1) time complexity.
         # But the dictionary is just an intermediate. Lookups will be done against a numpy ndarray, constructed later.
