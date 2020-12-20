@@ -1,34 +1,26 @@
-// Crystal Butler
-// Reset avatar AUs to 0 for neutral face
+//--------------------------------------------------------------------------------------------------------------
+// Script to reset all AU activations to a weight of 0
+// Crystal Butler  12/20/2020
+//--------------------------------------------------------------------------------------------------------------
 
-float $avatarArray[] = {0};
-setAttr "ExpressionBlendshapes.AU_1_C" $avatarArray[0];
-setAttr "ExpressionBlendshapes.AU_2_L" $avatarArray[1];
-setAttr "ExpressionBlendshapes.AU_2_R" $avatarArray[1];
-setAttr "ExpressionBlendshapes.AU_4_L" $avatarArray[2];
-setAttr "ExpressionBlendshapes.AU_4_R" $avatarArray[2];
-setAttr "ExpressionBlendshapes.AU_5_L" $avatarArray[3];
-setAttr "ExpressionBlendshapes.AU_5_R" $avatarArray[3];
-setAttr "ExpressionBlendshapes.AU_6_L" $avatarArray[4];
-setAttr "ExpressionBlendshapes.AU_6_R" $avatarArray[4];
-setAttr "ExpressionBlendshapes.AU_7_L" $avatarArray[5];
-setAttr "ExpressionBlendshapes.AU_7_R" $avatarArray[5];
-setAttr "ExpressionBlendshapes.AU_9" $avatarArray[6];
-setAttr "ExpressionBlendshapes.AU_10" $avatarArray[7];
-setAttr "ExpressionBlendshapes.AU_12_L" $avatarArray[8];
-setAttr "ExpressionBlendshapes.AU_12_R" $avatarArray[8];
-setAttr "ExpressionBlendshapes.AU_14_L" $avatarArray[9];
-setAttr "ExpressionBlendshapes.AU_14_R" $avatarArray[9];
-setAttr "ExpressionBlendshapes.AU_15_L" $avatarArray[10];
-setAttr "ExpressionBlendshapes.AU_15_R" $avatarArray[10];
-setAttr "ExpressionBlendshapes.AU_17" $avatarArray[11];
-setAttr "ExpressionBlendshapes.AU_20_L" $avatarArray[12];
-setAttr "ExpressionBlendshapes.AU_20_R" $avatarArray[12];
-setAttr "ExpressionBlendshapes.AU_T_25" $avatarArray[15];
-setAttr "ExpressionBlendshapes.AU_B_25" $avatarArray[15];
-setAttr "ExpressionBlendshapes.AU_26" $avatarArray[16];
-setAttr "ExpressionBlendshapes.AU_27" $avatarArray[17];
-setAttr "ExpressionBlendshapes.AU_43_L" $avatarArray[18];
-setAttr "ExpressionBlendshapes.AU_43_R" $avatarArray[18];
-setAttr "JawBlendshapes.AU_26_Jaw" $avatarArray[16];
-setAttr "JawBlendshapes.AU_27_Jaw" $avatarArray[17];
+// Reset face AUs
+$blendShapes = "ExpressionBlendshapes";
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node weigth attribute
+int $s = `size($blendShapesArray)`;
+int $i;
+for($i = 0; $i < $s; $i++) {
+    string $target = "ExpressionBlendshapes." + $blendShapesArray[$i];
+    setAttr $target 0;
+    print("reset " + $target + "\n");
+}
+
+// Reset jaw AUs
+$blendShapes = "JawBlendshapes";
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node weight attribute
+int $s = `size($blendShapesArray)`;
+int $i;
+for($i = 0; $i < $s; $i++) {
+    string $target = "JawBlendshapes." + $blendShapesArray[$i];
+    setAttr $target 0;
+    print("reset " + $target + "\n");
+}
