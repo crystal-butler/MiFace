@@ -90,7 +90,7 @@ for ($i = 0; $i < 21; $i++)
                 setAttr $auNames[$l + 1] $auWeights[$l + 1];
             }
             
-            print ("Image " + $k + "AU " + $auNames[$i] + ", weight " + $auWeights[$i] + " + "
+            print ("Image " + $k + " AU " + $auNames[$i] + ", weight " + $auWeights[$i] + " + "
                 + "AU " + $auNames[$j] + ", weight " + $auWeights[$j] + " + " 
                 + "AU " + $auNames[$l] + ", weight " + $auWeights[$l] + ".\n");
             setKeyframe -t $k "ExpressionBlendshapes";
