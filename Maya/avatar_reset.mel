@@ -1,9 +1,26 @@
+//--------------------------------------------------------------------------------------------------------------
+// Script to reset all AU activations to a weight of 0
+// Crystal Butler  12/20/2020
+//--------------------------------------------------------------------------------------------------------------
+
+// Reset face AUs
 $blendShapes = "ExpressionBlendshapes";
-string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node attributes
 int $s = `size($blendShapesArray)`;
 int $i;
 for($i = 0; $i < $s; $i++) {
     string $target = "ExpressionBlendshapes." + $blendShapesArray[$i];
+    setAttr $target 0;
+    print("reset " + $target + "\n");
+}
+
+// Reset jaw AUs
+$blendShapes = "JawBlendshapes";
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node attributes
+int $s = `size($blendShapesArray)`;
+int $i;
+for($i = 0; $i < $s; $i++) {
+    string $target = "JawBlendshapes." + $blendShapesArray[$i];
     setAttr $target 0;
     print("reset " + $target + "\n");
 }
