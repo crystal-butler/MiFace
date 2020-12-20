@@ -4,16 +4,35 @@
 //------------------------------------------------------------------------------------------------------------
 
 // array of blendshape weights
-float $auWeights[23] = {.7, .6, .6, 1.0, .7, .5, 1.0, .8, 1.0, .7, 1.0, 1.0, .7, .8, .8, 
-    .7, 1.0, 1.0, .6, .6, .7, .3, 1.0};
+float $auWeights[23] = {.7, .6, .6, 1.0, .7, .5, 1.0, .8, 1.0, 1.0, .7, 1.0, 1.0, .7, .8, .8, 
+    .7, 1.0, 1.0, .6, .6, .7, .3};
     
 // array of blendshapes
-string $auNames[23] = {"ExpressionBlendshapes.AU_1_C", "ExpressionBlendshapes.AU_2_L", "ExpressionBlendshapes.AU_2_B", 
-"ExpressionBlendshapes.AU_4_B", "ExpressionBlendshapes.AU_5_B", "ExpressionBlendshapes.AU_6_B", "ExpressionBlendshapes.AU_7_B", 
-"ExpressionBlendshapes.AU_9", "ExpressionBlendshapes.AU_10", "ExpressionBlendshapes.AU_12_B", "ExpressionBlendshapes.AU_14_L", 
-"ExpressionBlendshapes.AU_14_B", "ExpressionBlendshapes.AU_15_B", "ExpressionBlendshapes.AU_17", "ExpressionBlendshapes.AU_18", 
-"ExpressionBlendshapes.AU_20_B", "ExpressionBlendshapes.AU_23", "ExpressionBlendshapes.AU_24", "JawBlendshapes.AU_25_Jaw", 
-"ExpressionBlendshapes.AU_25", "ExpressionBlendshapes.AU_28_B", "ExpressionBlendshapes.AU_43_B", "ExpressionBlendshapes.AU_11"};
+string $auNames[23] = {
+                       "ExpressionBlendshapes.AU_1",
+                       "ExpressionBlendshapes.AU_2_L",
+                       "ExpressionBlendshapes.AU_2_B",
+                       "ExpressionBlendshapes.AU_4_B", 
+                       "ExpressionBlendshapes.AU_5_B",
+                       "ExpressionBlendshapes.AU_6_B",
+                       "ExpressionBlendshapes.AU_7_B",
+                       "ExpressionBlendshapes.AU_9",
+                       "ExpressionBlendshapes.AU_10",
+                       "ExpressionBlendshapes.AU_11",
+                       "ExpressionBlendshapes.AU_12_B",
+                       "ExpressionBlendshapes.AU_14_L",
+                       "ExpressionBlendshapes.AU_14_B", 
+                       "ExpressionBlendshapes.AU_15_B",
+                       "ExpressionBlendshapes.AU_17",
+                       "ExpressionBlendshapes.AU_18",
+                       "ExpressionBlendshapes.AU_20_B",
+                       "ExpressionBlendshapes.AU_23",
+                       "ExpressionBlendshapes.AU_24",
+                       "JawBlendshapes.AU_25_Jaw",
+                       "ExpressionBlendshapes.AU_25",
+                       "ExpressionBlendshapes.AU_28_B",
+                       "ExpressionBlendshapes.AU_43_B"};
+                       
 
 //-------------------------------------------------------------------------
 // Loops to generate triples
@@ -26,73 +45,73 @@ for ($i = 0; $i <23; $i++)
 {
     setAttr $auNames[$i] 0;
 }
+// make sure blendshape controllers are active
+setAttr "ExpressionBlendshapes.envelope" 1;
+setAttr "JawBlendshapes.envelope" 1;
 
 // outer loop
 for ($i = 0; $i < 21; $i++)
 {
-    if ($i == 19)
+    if ($i == 20)  // AU 25: do not open mouth independent of jaw
     {
         $i++;
     }
     setAttr $auNames[$i] $auWeights[$i];
-    if ($i == 18)
+    if ($i == 19)  // AU_25_Jaw: open the mouth and jaw together
     {
         setAttr $auNames[$i + 1] $auWeights[$i + 1];
     }
-// middle loop
+    // middle loop
     for ($j = $i + 1; $j < 22; $j++)
     {
-        if ($i == 1 && $j == 2)
-        {
-            $j++;
-        }
-        if ($j == 19)
+        if (($j == 20)  // AU 25: do not open mouth independent of jaw
+        || ($i == 1 && $j == 2)  // AUs 2_L and 2_B: don't combine unilateral and bilateral activations
+        || ($i == 11 && $j == 12))  // AUs 14_L and 14_B: don't combine unilateral and bilateral activations
         {
             $j++;
         }
         setAttr $auNames[$j] $auWeights[$j];
-        if ($j == 18)
+        if ($j == 19)  // AU_25_Jaw: open the mouth and jaw together
         {
             setAttr $auNames[$j + 1] $auWeights[$j + 1];
         }
-// inner loop
+        // inner loop
         for ($l = $j + 1; $l < 23; $l++)
         {
-            if ($j == 1 && $l == 2)
-            {
-                $l++;
-            }
-            if ($l == 19)
+            if (($l == 20)  // AU 25: do not open mouth independent of jaw
+            || ($j == 1 && $l == 2)  // AUs 2_L and 2_B: don't combine unilateral and bilateral activations
+            || ($j == 11 && $l == 12))  // AUs 14_L and 14_B: don't combine unilateral and bilateral activations
             {
                 $l++;
             }
             setAttr $auNames[$l] $auWeights[$l];
-            if ($l == 18)
+            if ($l == 19)  // AU_25_Jaw: open the mouth and jaw together
             {
                 setAttr $auNames[$l + 1] $auWeights[$l + 1];
             }
             
-            print ("AU " + $auNames[$i] + ", weight " + $auWeights[$i] + " + "
+            print ("Image " + $k + "AU " + $auNames[$i] + ", weight " + $auWeights[$i] + " + "
                 + "AU " + $auNames[$j] + ", weight " + $auWeights[$j] + " + " 
                 + "AU " + $auNames[$l] + ", weight " + $auWeights[$l] + ".\n");
             setKeyframe -t $k "ExpressionBlendshapes";
             setKeyframe -t $k "JawBlendshapes";
             
-            if ($l == 18)
+            //  Reset blendshapes to 0
+            if ($l == 19)  // AU_25_Jaw: close the mouth and jaw together
             {
                 setAttr $auNames[$l + 1] 0;
             }
             setAttr $auNames[$l] 0;
             $k++;
         }
-      if ($j == 18)
+      if ($j == 19)  // AU_25_Jaw: close the mouth and jaw together
       {
           setAttr $auNames[$j + 1] 0;
       }
       setAttr $auNames[$j] 0;
     }
     setAttr $auNames[$i] 0;
-    if ($i == 18)
+    if ($i == 19)  // AU_25_Jaw: close the mouth and jaw together
     {
         setAttr $auNames[$i + 1] 0;
     }
