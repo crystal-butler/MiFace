@@ -1,1 +1,0 @@
-for f in *; do <$f awk '$3 != "WNF"' > tmp.txt; mv -f tmp.txt $f; done

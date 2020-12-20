@@ -1,1 +1,0 @@
-for f in *; do <$f awk '$3 == "WNF"' >> ../badWords.txt; done

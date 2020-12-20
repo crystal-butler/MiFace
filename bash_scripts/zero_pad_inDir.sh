@@ -1,1 +1,0 @@
-for f in [0-9]*.jpg; do mv $f `printf %04d.%s ${f%.*} ${f##*.}`; done

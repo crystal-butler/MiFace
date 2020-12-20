@@ -1,1 +1,0 @@
-for f in *; do awk '{print FILENAME, $0}' "$f" > tmp; mv tmp $f; done
