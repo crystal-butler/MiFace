@@ -5,7 +5,7 @@
 
 // Reset face AUs
 $blendShapes = "ExpressionBlendshapes";
-string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node attributes
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node weigth attribute
 int $s = `size($blendShapesArray)`;
 int $i;
 for($i = 0; $i < $s; $i++) {
@@ -16,7 +16,7 @@ for($i = 0; $i < $s; $i++) {
 
 // Reset jaw AUs
 $blendShapes = "JawBlendshapes";
-string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node attributes
+string $blendShapesArray[] = `listAttr -m ($blendShapes + ".w")`;  // read targets list from parent node weight attribute
 int $s = `size($blendShapesArray)`;
 int $i;
 for($i = 0; $i < $s; $i++) {
