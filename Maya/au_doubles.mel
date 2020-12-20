@@ -89,8 +89,11 @@ for ($i = 0; $i < 22; $i++)
             setAttr $auNames[$j + 1] $auWeights[$j + 1];
         }
         
+        // Display the frame number and AU activations in the history pane
         print ("Image " + $k + " AU " + $auNames[$i] + " weight " + $auWeights[$i] + " + " + 
                 "AU " + $auNames[$j] + " weight " + $auWeights[$j] + "\n");
+        
+        // Create animation keyframes for the activated AUs
         setKeyframe -t $k "ExpressionBlendshapes";
         setKeyframe -t $k "JawBlendshapes";
         
